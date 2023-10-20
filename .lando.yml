@@ -1,0 +1,5 @@
+name: my-lando-app
+recipe: lamp
+config:
+  type: php:8.1
+  webroot: ./public

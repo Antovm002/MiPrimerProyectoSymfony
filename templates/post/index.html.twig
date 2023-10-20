@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PostController!{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    {{ form(form) }}
+    
+    <div class="row">
+        {% for post in posts %}
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="row no-gutters">
+                        <div class="col-md-4">
+                            {% if post.file is not null %}
+                                <img class="card-img" style="widht:200px" src="/uploads/files/{{ post.file }}" alt="Post Image">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title font-weight-bold">{{ post.title }}</h5>
+                                <p class="card-text">{{ post.description }}</p>
+                                <p class="card-text text-muted">{{ post.creationDate | date }}</p>
+                                <a href='{{ path('postDetails', {id: post.id}) }}' class="btn btn-primary">Leer más</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="navigation"
+    {% if posts != null %}
+        {{ knp_pagination_render(posts) }}
+    {% endif %}>
+    </div>
+{% endblock %}
+
+
+

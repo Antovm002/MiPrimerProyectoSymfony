@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<style>
+    .btn-primary {
+        background-color: #307543 !important;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="card-title font-weight-bold text-center">{{ post.title }}</h1>
+                    <hr>
+                    {% if post.file is not null %}
+                        <div class="text-center">
+                            <img class="card-img-top rounded" style="width: 100%; height: auto; max-width: 400px; margin-bottom: 20px;" src="/uploads/files/{{ post.file }}" alt="Post Image">
+                        </div>
+                    {% endif %}
+                    <b class="card-text">{{ post.user.email }}</b>
+                    <p class="card-text">{{ post.creationDate | date }}</p>
+                    <p class="card-text">{{ post.description }}</p>
+
+                    {# Sección del botón "Me gusta" #}
+                <div class="d-flex justify-content-start mb-3">
+                    <button class="button btn rounded-pill" onclick="likePost({{post.id}})">
+                        <i id="likeButton" class="fas fa-thumbs-up {% if (post.iLikeIt) %} text-primary {% else %} text-secondary {% endif %}"> {{ post.likes|length }}</i>
+                    </button>
+                </div>
+
+                {# Sección de comentarios #}
+                <h3>Comentarios</h3>
+                <div class="mb-3">
+                    {# Aquí, iterarías sobre los comentarios existentes para este post #}
+                    {% for comment in post.comments %}
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ comment.authorName }}</h5>
+                                <p class="card-text">{{ comment.content }}</p>
+                                <p class="card-text text-muted">{{ comment.publishedAt|date('F j, Y') }}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p>No hay comentarios aún. ¡Sé el primero en comentar!</p>
+                    {% endfor %}
+                </div>
+
+                {# Formulario para nuevos comentarios #}
+                <form action="{{ path('comment_new', {'id': post.id}) }}" method="post">
+                    <div class="form-group">
+                   
+                    </div>
+                    <div class="form-group">
+                    
+                        <label for="commentContent">Agregar comentario...</label>
+                        <textarea id="commentContent" name="content" required class="form-control" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary rounded-pill font-weight-bold">Comentar</button>
+                </form>
+            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        function likePost(id) {
+            fetch(`/like/${id}`).then((response) => {
+                return response.json()
+            }).then((data) => {
+                if (data.iLikeIt) {
+                    document.getElementById("likeButton").className = "fas fa-thumbs-up text-primary";
+                } else {
+                    document.getElementById("likeButton").className = "fas fa-thumbs-up text-secondary";
+                }
+
+                document.getElementById("likeButton").innerHTML = " " + data.amount;
+            });
+        }
+    </script>
+{% endblock %}
+ 
